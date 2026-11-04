@@ -1,0 +1,228 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --bg-page: #f8fafc;
+    --bg-surface: #ffffff;
+    --border-color: #e2e8f0;
+    --text-primary: #0f172a;
+    --text-secondary: #475569;
+    --text-muted: #94a3b8;
+    --accent-amber: #d97706;
+  }
+
+  /* 🌙 Dark Mode (Ночная) */
+  [data-theme="dark"] {
+    --bg-page: #0f1117;
+    --bg-surface: #181b24;
+    --border-color: #272c3d;
+    --text-primary: #f8fafc;
+    --text-secondary: #cbd5e1;
+    --text-muted: #64748b;
+    --accent-amber: #f59e0b;
+  }
+
+  /* 🕯️ Night Light / Warm Amber Mode (Ночной свет / Защита глаз) */
+  /* Specially calibrated for screens with Night Light / TrueTone / warm lighting */
+  [data-theme="night-light"] {
+    --bg-page: #191511;
+    --bg-surface: #241e18;
+    --border-color: #3b3126;
+    --text-primary: #fdf5ea;
+    --text-secondary: #e2d2bd;
+    --text-muted: #ab957a;
+    --accent-amber: #f59e0b;
+  }
+
+  /* 📜 Sepia / Book Paper Mode (Винтажная книжная бумага) */
+  [data-theme="sepia"] {
+    --bg-page: #f4ecdc;
+    --bg-surface: #fbf6ec;
+    --border-color: #e0d2bc;
+    --text-primary: #2d2419;
+    --text-secondary: #4e3f2d;
+    --text-muted: #826e54;
+    --accent-amber: #b45309;
+  }
+}
+
+/* Global Theme Overrides for Core UI Elements */
+
+/* Dark Theme overrides */
+[data-theme="dark"] body {
+  background-color: #0f1117;
+  color: #f8fafc;
+}
+[data-theme="dark"] .bg-white {
+  background-color: #181b24 !important;
+}
+[data-theme="dark"] .bg-neutral-50 {
+  background-color: #0f1117 !important;
+}
+[data-theme="dark"] .bg-neutral-100 {
+  background-color: #202533 !important;
+}
+[data-theme="dark"] .bg-neutral-200 {
+  background-color: #2a3144 !important;
+}
+[data-theme="dark"] .border-neutral-200,
+[data-theme="dark"] .border-neutral-100 {
+  border-color: #262c3e !important;
+}
+[data-theme="dark"] .text-neutral-900 {
+  color: #f8fafc !important;
+}
+[data-theme="dark"] .text-neutral-800 {
+  color: #e2e8f0 !important;
+}
+[data-theme="dark"] .text-neutral-700 {
+  color: #cbd5e1 !important;
+}
+[data-theme="dark"] .text-neutral-600 {
+  color: #94a3b8 !important;
+}
+[data-theme="dark"] .text-neutral-500 {
+  color: #64748b !important;
+}
+[data-theme="dark"] .text-neutral-400 {
+  color: #475569 !important;
+}
+[data-theme="dark"] header {
+  background-color: rgba(24, 27, 36, 0.95) !important;
+  border-color: #262c3e !important;
+}
+[data-theme="dark"] footer {
+  background-color: #181b24 !important;
+  border-color: #262c3e !important;
+}
+
+/* Night Light (Warm Amber) Theme overrides */
+[data-theme="night-light"] body {
+  background-color: #191511;
+  color: #fdf5ea;
+}
+[data-theme="night-light"] .bg-white {
+  background-color: #241e18 !important;
+}
+[data-theme="night-light"] .bg-neutral-50 {
+  background-color: #191511 !important;
+}
+[data-theme="night-light"] .bg-neutral-100 {
+  background-color: #302820 !important;
+}
+[data-theme="night-light"] .bg-neutral-200 {
+  background-color: #3d3328 !important;
+}
+[data-theme="night-light"] .border-neutral-200,
+[data-theme="night-light"] .border-neutral-100 {
+  border-color: #3b3126 !important;
+}
+[data-theme="night-light"] .text-neutral-900 {
+  color: #fdf5ea !important;
+}
+[data-theme="night-light"] .text-neutral-800 {
+  color: #f2e3d0 !important;
+}
+[data-theme="night-light"] .text-neutral-700 {
+  color: #e2d2bd !important;
+}
+[data-theme="night-light"] .text-neutral-600 {
+  color: #cbb69c !important;
+}
+[data-theme="night-light"] .text-neutral-500 {
+  color: #9c8369 !important;
+}
+[data-theme="night-light"] .text-neutral-400 {
+  color: #7d6852 !important;
+}
+[data-theme="night-light"] header {
+  background-color: rgba(36, 30, 24, 0.95) !important;
+  border-color: #3b3126 !important;
+}
+[data-theme="night-light"] footer {
+  background-color: #241e18 !important;
+  border-color: #3b3126 !important;
+}
+
+/* Sepia Theme overrides */
+[data-theme="sepia"] body {
+  background-color: #f4ecdc;
+  color: #2d2419;
+}
+[data-theme="sepia"] .bg-white {
+  background-color: #fbf6ec !important;
+}
+[data-theme="sepia"] .bg-neutral-50 {
+  background-color: #f4ecdc !important;
+}
+[data-theme="sepia"] .bg-neutral-100 {
+  background-color: #eae0cb !important;
+}
+[data-theme="sepia"] .border-neutral-200,
+[data-theme="sepia"] .border-neutral-100 {
+  border-color: #e0d2bc !important;
+}
+[data-theme="sepia"] .text-neutral-900 {
+  color: #2d2419 !important;
+}
+[data-theme="sepia"] .text-neutral-800 {
+  color: #3f3223 !important;
+}
+[data-theme="sepia"] .text-neutral-700 {
+  color: #4e3f2d !important;
+}
+[data-theme="sepia"] .text-neutral-600 {
+  color: #6a5742 !important;
+}
+[data-theme="sepia"] .text-neutral-500 {
+  color: #826e54 !important;
+}
+[data-theme="sepia"] header {
+  background-color: rgba(251, 246, 236, 0.95) !important;
+  border-color: #e0d2bc !important;
+}
+[data-theme="sepia"] footer {
+  background-color: #fbf6ec !important;
+  border-color: #e0d2bc !important;
+}
+
+/* Literary typography helper classes */
+.font-book-serif {
+  font-family: 'Literata', 'Merriweather', 'Georgia', serif;
+}
+.font-book-sans {
+  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+}
+.font-book-mono {
+  font-family: 'JetBrains Mono', monospace;
+}
+
+/* Smooth book reader typography and text rendering */
+.reader-content p {
+  text-indent: 1.5em;
+  margin-bottom: 0.85em;
+}
+.reader-content p:first-of-type {
+  text-indent: 0;
+}
+.reader-content p.no-indent {
+  text-indent: 0;
+}
+
+/* Mobile Ergonomics & Smooth Touch */
+html, body {
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-none {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.pb-safe {
+  padding-bottom: env(safe-area-inset-bottom, 1rem);
+}
