@@ -36,6 +36,7 @@ export const ReadersTab: React.FC<ReadersTabProps> = ({ onIssueToReader }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingReader, setEditingReader] = useState<Reader | null>(null);
   const [selectedReaderCard, setSelectedReaderCard] = useState<EnrichedReader | null>(null);
+  const [readerToDelete, setReaderToDelete] = useState<EnrichedReader | null>(null);
 
   // Form State
   const [fio, setFio] = useState('');
@@ -266,13 +267,9 @@ export const ReadersTab: React.FC<ReadersTabProps> = ({ onIssueToReader }) => {
                 </button>
 
                 <button
-                  onClick={() => {
-                    if (confirm(`Удалить читателя «${reader.фио}»?`)) {
-                      deleteReader(reader.id);
-                    }
-                  }}
+                  onClick={() => setReaderToDelete(reader)}
                   title="Удалить читателя"
-                  className="p-2 text-neutral-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors min-w-[40px] min-h-[40px] flex items-center justify-center"
+                  className="p-2 text-rose-500 hover:text-rose-700 hover:bg-rose-50 rounded-lg transition-colors min-w-[40px] min-h-[40px] flex items-center justify-center"
                 >
                   <Trash2 className="w-4 h-4" />
                 </button>
@@ -400,11 +397,7 @@ export const ReadersTab: React.FC<ReadersTabProps> = ({ onIssueToReader }) => {
 
                           {/* Delete */}
                           <button
-                            onClick={() => {
-                              if (confirm(`Удалить читателя «${reader.фио}»?`)) {
-                                deleteReader(reader.id);
-                              }
-                            }}
+                            onClick={() => setReaderToDelete(reader)}
                             title="Удалить читателя"
                             className="p-1 text-neutral-400 hover:text-rose-600 hover:bg-rose-50 rounded-md transition-colors"
                           >
@@ -584,22 +577,103 @@ export const ReadersTab: React.FC<ReadersTabProps> = ({ onIssueToReader }) => {
             </div>
 
             <div className="flex items-center justify-between pt-2 border-t border-neutral-100">
-              <button
-                onClick={() => {
-                  const id = selectedReaderCard.id;
-                  setSelectedReaderCard(null);
-                  onIssueToReader(id);
-                }}
-                className="px-3.5 py-1.5 text-xs font-medium text-amber-800 bg-amber-50 hover:bg-amber-100 rounded-lg border border-amber-200 transition-colors"
-              >
-                + Выдать книгу этому читателю
-              </button>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => {
+                    const id = selectedReaderCard.id;
+                    setSelectedReaderCard(null);
+                    onIssueToReader(id);
+                  }}
+                  className="px-3.5 py-1.5 text-xs font-medium text-amber-800 bg-amber-50 hover:bg-amber-100 rounded-lg border border-amber-200 transition-colors"
+                >
+                  + Выдать книгу
+                </button>
+                <button
+                  onClick={() => {
+                    const r = selectedReaderCard;
+                    setSelectedReaderCard(null);
+                    setReaderToDelete(r);
+                  }}
+                  className="px-2.5 py-1.5 text-xs font-medium text-rose-600 hover:bg-rose-50 rounded-lg transition-colors flex items-center gap-1"
+                >
+                  <Trash2 className="w-3.5 h-3.5" />
+                  <span>Удалить</span>
+                </button>
+              </div>
 
               <button
                 onClick={() => setSelectedReaderCard(null)}
                 className="px-4 py-2 text-xs font-medium text-neutral-700 bg-neutral-100 hover:bg-neutral-200 rounded-lg transition-colors"
               >
                 Закрыть
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Delete Reader In-App Confirmation Modal */}
+      {readerToDelete && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-neutral-900/50 backdrop-blur-xs">
+          <div className="bg-white rounded-xl border border-neutral-200 shadow-2xl max-w-md w-full overflow-hidden animate-in fade-in zoom-in-95 duration-150">
+            <div className="flex items-center justify-between px-6 py-4 border-b border-neutral-100 bg-rose-50/50">
+              <div className="flex items-center gap-2.5 text-rose-700">
+                <div className="w-8 h-8 rounded-full bg-rose-100 flex items-center justify-center shrink-0">
+                  <Trash2 className="w-4 h-4 text-rose-600" />
+                </div>
+                <div>
+                  <h3 className="text-sm font-semibold text-neutral-900">Удаление читателя</h3>
+                  <p className="text-[11px] text-neutral-500">Билет #{readerToDelete.id}</p>
+                </div>
+              </div>
+              <button
+                onClick={() => setReaderToDelete(null)}
+                className="p-1.5 text-neutral-400 hover:text-neutral-700 rounded-lg transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="p-6 space-y-3 text-xs">
+              <p className="text-neutral-700 text-sm leading-relaxed">
+                Вы действительно хотите удалить читателя <strong className="font-semibold text-neutral-900">«{readerToDelete.фио}»</strong>?
+              </p>
+
+              {readerToDelete.activeLoansCount > 0 ? (
+                <div className="p-3 bg-amber-50 border border-amber-200 rounded-lg text-amber-900 space-y-1">
+                  <div className="flex items-center gap-1.5 font-semibold text-amber-800">
+                    <AlertCircle className="w-4 h-4 shrink-0" />
+                    <span>Внимание: книги на руках ({readerToDelete.activeLoansCount} экз.)</span>
+                  </div>
+                  <p className="text-[11px] leading-relaxed text-amber-700">
+                    За читателем числятся не сданные издания. При подтверждении удаления все выданные ему книги будут автоматически возвращены в фонд библиотеки, а формуляр закрыт.
+                  </p>
+                </div>
+              ) : (
+                <p className="text-neutral-500 text-[11px]">
+                  У читателя нет активных задолженностей. Запись читателя и история абонемента будут удалены из базы данных.
+                </p>
+              )}
+            </div>
+
+            <div className="flex items-center justify-end gap-2.5 px-6 py-4 border-t border-neutral-100 bg-neutral-50/50">
+              <button
+                type="button"
+                onClick={() => setReaderToDelete(null)}
+                className="px-4 py-2 text-xs font-medium text-neutral-700 hover:bg-neutral-200/70 rounded-lg transition-colors"
+              >
+                Отмена
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  deleteReader(readerToDelete.id, true);
+                  setReaderToDelete(null);
+                }}
+                className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-medium text-white bg-rose-600 hover:bg-rose-700 rounded-lg shadow-sm transition-colors"
+              >
+                <Trash2 className="w-3.5 h-3.5" />
+                <span>Да, удалить</span>
               </button>
             </div>
           </div>

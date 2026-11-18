@@ -21,6 +21,45 @@ app.get(['/health', '/api/health', '/_ah/health'], (_req, res) => {
   res.status(200).json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
+// Direct download endpoint for the generated database documentation Word document
+app.get(['/bibliotech_database_project.docx', '/api/download/docx', '/download/docx'], (_req, res) => {
+  const filePath = fs.existsSync(path.resolve(__dirname, 'bibliotech_database_project.docx'))
+    ? path.resolve(__dirname, 'bibliotech_database_project.docx')
+    : path.resolve(__dirname, 'dist', 'bibliotech_database_project.docx');
+
+  if (fs.existsSync(filePath)) {
+    res.download(filePath, 'Otchet_BD_Bibliotech_Zhetysu_ISR311.docx');
+  } else {
+    res.status(404).send('Документ не найден');
+  }
+});
+
+// Direct download endpoint for Readers module Word document
+app.get(['/readers_module_project.docx', '/api/download/readers-docx', '/download/readers-docx'], (_req, res) => {
+  const filePath = fs.existsSync(path.resolve(__dirname, 'readers_module_project.docx'))
+    ? path.resolve(__dirname, 'readers_module_project.docx')
+    : path.resolve(__dirname, 'dist', 'readers_module_project.docx');
+
+  if (fs.existsSync(filePath)) {
+    res.download(filePath, 'Otchet_Modul_Chitateli_Zhetysu_ISR311.docx');
+  } else {
+    res.status(404).send('Документ не найден');
+  }
+});
+
+// Direct download endpoint for Monitoring & Optimization Word document
+app.get(['/monitoring_and_optimization_project.docx', '/api/download/monitoring-docx', '/download/monitoring-docx'], (_req, res) => {
+  const filePath = fs.existsSync(path.resolve(__dirname, 'monitoring_and_optimization_project.docx'))
+    ? path.resolve(__dirname, 'monitoring_and_optimization_project.docx')
+    : path.resolve(__dirname, 'dist', 'monitoring_and_optimization_project.docx');
+
+  if (fs.existsSync(filePath)) {
+    res.download(filePath, 'Otchet_Monitoring_Optimizaciya_Zhetysu_ISR311.docx');
+  } else {
+    res.status(404).send('Документ не найден');
+  }
+});
+
 const defaultAuthors = [
   { id: 1, фио: 'Толстой Лев Николаевич', full_name: 'Толстой Лев Николаевич', country: 'Россия', страна: 'Россия' },
   { id: 2, фио: 'Достоевский Федор Михайлович', full_name: 'Достоевский Федор Михайлович', country: 'Россия', страна: 'Россия' },

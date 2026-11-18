@@ -75,7 +75,7 @@ interface LibraryContextType {
   // Actions - Readers
   addReader: (reader: Omit<Reader, 'id'>) => void;
   updateReader: (id: number, reader: Partial<Reader>) => void;
-  deleteReader: (id: number) => { success: boolean; error?: string };
+  deleteReader: (id: number, force?: boolean) => { success: boolean; error?: string };
 
   // Actions - Librarians
   addLibrarian: (librarian: Omit<Librarian, 'id'>) => void;
@@ -417,17 +417,48 @@ export const LibraryProvider: React.FC<{ children: React.ReactNode }> = ({ child
     showToast('info', 'Данные читателя обновлены');
   };
 
-  const deleteReader = (id: number) => {
-    const hasActiveLoans = loans.some(
+  const deleteReader = (id: number, force: boolean = false) => {
+    const activeLoans = loans.filter(
       (l) => l.читатель_id === id && (l.статус === 'на руках' || l.статус === 'просрочена')
     );
-    if (hasActiveLoans) {
-      const err = 'Невозможно удалить читателя: у него числятся не сданные книги!';
+
+    if (activeLoans.length > 0 && !force) {
+      const err = `Невозможно удалить читателя: у него на руках числится ${activeLoans.length} экз. литературы.`;
       showToast('error', 'Отказ в удалении', err);
       return { success: false, error: err };
     }
+
+    // If force is true (or no active loans), return any active books back to available library stock
+    if (activeLoans.length > 0) {
+      setBooks((prevBooks) => {
+        const countsByBook = new Map<number, number>();
+        activeLoans.forEach((l) => {
+          countsByBook.set(l.книга_id, (countsByBook.get(l.книга_id) || 0) + 1);
+        });
+
+        return prevBooks.map((b) => {
+          const toAdd = countsByBook.get(b.id) || 0;
+          if (toAdd > 0) {
+            return {
+              ...b,
+              доступно: Math.min(b.количество, b.доступно + toAdd),
+            };
+          }
+          return b;
+        });
+      });
+    }
+
+    // Clean up all loans related to this reader to maintain clean integrity
+    setLoans((prev) => prev.filter((l) => l.читатель_id !== id));
+
+    const readerToDelete = readers.find((r) => r.id === id);
     setReaders((prev) => prev.filter((r) => r.id !== id));
-    showToast('info', 'Читатель удален');
+    showToast(
+      'info',
+      'Читатель удален',
+      readerToDelete ? `Читатель «${readerToDelete.фио}» удален из базы.` : undefined
+    );
     return { success: true };
   };
 
